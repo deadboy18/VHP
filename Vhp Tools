@@ -1,0 +1,176 @@
+//Below is a C file I made trial and error that will run those bat files command in my bat script folder that will allow you to LAUNCH,KILL,RESTART Vhp and VHP Print.
+// I'm not sure if it'll be same for your scenario you may edit for your use case accordingly 
+// I've compiled it using the built in tool in windows cmd
+// this command is what i typed to compile it C:\Windows\Microsoft.NET\Framework64\v3.5\csc.exe /t:winexe yourfilename.cs
+// to add icon u can use this /win32icon:filename
+// read more about it at https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/?redirectedfrom=MSDN
+// if your setup is same as mine below you can try the compiled versions
+
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
+
+public class VhpToolsForm : Form
+{
+    public VhpToolsForm()
+    {
+        // Set the title of the form
+        this.Text = "VHP TOOL";
+        // Set the size of the form
+        this.Size = new System.Drawing.Size(250, 200);
+
+        // Set the icon for the form
+	
+        
+
+        // Create TableLayoutPanel to layout buttons
+        TableLayoutPanel panel = new TableLayoutPanel();
+        panel.Dock = DockStyle.Fill;
+        panel.ColumnCount = 1;
+        panel.RowCount = 4;
+        this.Controls.Add(panel);
+
+        // Create VHP LAUNCHER button
+        Button btnVhpLauncher = new Button();
+        btnVhpLauncher.Text = "LAUNCH";
+        btnVhpLauncher.Click += new EventHandler(VhpLauncher_Click);
+        panel.Controls.Add(btnVhpLauncher, 0, 0);
+
+        // Create VHP KILLER button
+        Button btnVhpKiller = new Button();
+        btnVhpKiller.Text = "KILL";
+        btnVhpKiller.Click += new EventHandler(VhpKiller_Click);
+        panel.Controls.Add(btnVhpKiller, 0, 1);
+
+        // Create VHP RESTART button
+        Button btnVhpRestart = new Button();
+        btnVhpRestart.Text = "RESTART";
+        btnVhpRestart.Click += new EventHandler(VhpRestart_Click);
+        panel.Controls.Add(btnVhpRestart, 0, 2);
+
+	// Create About button
+        Button btnAbout = new Button();
+        btnAbout.Text = "About";
+        btnAbout.Click += new EventHandler(About_Click);
+        panel.Controls.Add(btnAbout, 0, 0);
+    }
+
+    // Event handler for VHP LAUNCHER button click
+    private void VhpLauncher_Click(object sender, EventArgs e)
+    {
+    try
+    {
+        // Change directory to C:\e1-vhp\VHPPRINT
+        Directory.SetCurrentDirectory(@"C:\e1-vhp\VHPPRINT");
+
+        // Start VHPPrintService.exe
+        Process.Start("VHPPrintService.exe");
+
+        // Change directory to \OpenEdge\bin
+        Directory.SetCurrentDirectory(@"C:\OpenEdge\bin");
+
+        // Start prowin32.exe with command line arguments
+        Process.Start("prowin32.exe", "-pf c:\\e1-vhp\\config\\vhpAS.pf -ini c:\\e1-vhp\\config\\vhpAS.ini -p e1-vhpstart.p -Wa -wpp");
+
+        // Start _mprosrv with command line arguments
+        Process.Start("_mprosrv", "C:\\e1-vhp\\localDB\\vhp -N TCP -H localhost -S 2600");
+
+        MessageBox.Show("VHP launched successfully.");
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show("Error launching VHP programs: " + ex.Message);
+    }
+}
+
+    // Event handler for VHP KILLER button click
+    private void VhpKiller_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            // End task VHPPrintService.exe
+            Process[] processes = Process.GetProcessesByName("VHPPrintService");
+            foreach (var process in processes)
+            {
+                process.Kill();
+            }
+
+            // End task prowin32.exe
+            processes = Process.GetProcessesByName("prowin32");
+            foreach (var process in processes)
+            {
+                process.Kill();
+            }
+
+            MessageBox.Show("VHP terminated successfully.");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show("Error terminating programs: " + ex.Message);
+        }
+    }
+
+    // Event handler for VHP RESTART button click
+    private void VhpRestart_Click(object sender, EventArgs e)
+{
+    try
+    {
+        // Check if VHPPrintService.exe is running and terminate it
+        {
+            try
+            {
+                // End task VHPPrintService.exe
+                Process[] processes = Process.GetProcessesByName("VHPPrintService");
+                foreach (var process in processes)
+                {
+                    process.Kill();
+                }
+
+                // End task prowin32.exe
+                processes = Process.GetProcessesByName("prowin32");
+                foreach (var process in processes)
+                {
+                    process.Kill();
+                }
+
+                // Change directory to C:\e1-vhp\VHPPRINT
+                Directory.SetCurrentDirectory(@"C:\e1-vhp\VHPPRINT");
+
+                // Start VHPPrintService.exe
+                Process.Start("VHPPrintService.exe");
+
+                // Change directory to \OpenEdge\bin
+                Directory.SetCurrentDirectory(@"C:\OpenEdge\bin");
+
+                // Start prowin32.exe with command line arguments
+                Process prowin32Process = Process.Start("prowin32.exe", "-pf c:\\e1-vhp\\config\\vhpAS.pf -ini c:\\e1-vhp\\config\\vhpAS.ini -p e1-vhpstart.p -Wa -wpp");
+
+                 // Show the message box
+                MessageBox.Show("VHP restarted successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error restarting VHP programs: " + ex.Message);
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show("Error restarting VHP programs: " + ex.Message);
+    }
+}
+
+    // Event handler for About button click
+    private void About_Click(object sender, EventArgs e)
+    {
+        MessageBox.Show("Made by Kesh :D");
+    }
+
+    // Entry point of the application
+    public static void Main()
+    {
+        Application.Run(new VhpToolsForm());
+    }
+}
