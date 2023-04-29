@@ -8,3 +8,4 @@ Also in the above posted file is the file to download the VHP program or set it 
 You may download those file from : [Google Drive](https://drive.google.com/drive/folders/1qNNNKMWqKq2a_aeTej4M5DnDHBEjt01J?usp=sharing)
 
 To launch the VHP Program or VHP Print you may use the tool I've made called VHP Tools also shared above.
+Don't forget to edit the IP address for the server connection to your server ip
