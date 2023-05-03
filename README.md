@@ -9,3 +9,9 @@ You may download those file from : [Google Drive](https://drive.google.com/drive
 
 To launch the VHP Program or VHP Print you may use the tool I've made called VHP Tools also shared above.
 Don't forget to edit the IP address for the server connection to your server ip
+
+Added new version using Powershell 
+Has the ability to do ping to the server 
+
+![image](https://user-images.githubusercontent.com/53135082/235884707-a264d8a5-bcc3-4a0a-a8d8-de81fa194972.png)
+
